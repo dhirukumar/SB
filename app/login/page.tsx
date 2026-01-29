@@ -1,5 +1,5 @@
 'use client';
-export const dynamic = "force-dynamic";
+
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/Authstore';
+import { Suspense } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -42,6 +43,7 @@ export default function LoginPage() {
   };
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <div className="min-h-screen">
       <Navbar/>
 
@@ -131,5 +133,6 @@ export default function LoginPage() {
         </motion.div>
       </div>
     </div>
+    </Suspense>
   );
 }
