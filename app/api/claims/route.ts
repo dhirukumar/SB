@@ -21,14 +21,14 @@ export async function POST(request: NextRequest) {
       return createErrorResponse('Deal ID is required', 400);
     }
 
-    // Check if deal exists
+    
     const deal = await Deal.findById(dealId);
 
     if (!deal) {
       return createErrorResponse('Deal not found', 404);
     }
 
-    // Check if deal is active and available
+    
     if (!deal.isActive) {
       return createErrorResponse('This deal is no longer active', 400);
     }
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       return createErrorResponse('This deal is no longer available', 400);
     }
 
-    // Check verification requirement
+    
     if (deal.accessLevel === 'locked' && deal.eligibilityConditions.requiresVerification) {
       if (!user.isVerified) {
         return createErrorResponse(
@@ -47,30 +47,30 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Check if already claimed
+    
     const existingClaim = await Claim.findOne({ user: user._id, deal: dealId });
 
     if (existingClaim) {
       return createErrorResponse('You have already claimed this deal', 400);
     }
 
-    // Create claim
+ 
     const claim = await Claim.create({
       user: user._id,
       deal: dealId,
       status: deal.accessLevel === 'locked' ? 'pending' : 'approved'
     });
 
-    // Increment deal claim count
+    
     await deal.incrementClaimCount();
 
-    // Auto-approve public deals
+    
     if (deal.accessLevel === 'public') {
       const redemptionCode = `DEAL-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
       await claim.approve(redemptionCode);
     }
 
-    // Populate claim
+   
     await claim.populate('deal');
 
     return createSuccessResponse({

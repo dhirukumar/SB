@@ -10,18 +10,18 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { name, email, password, company, websiteUrl } = body;
 
-    // Validation
+    
     if (!name || !email || !password) {
       return createErrorResponse('Please provide name, email and password', 400);
     }
 
-    // Check if user exists
+   
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return createErrorResponse('Email already registered', 400);
     }
 
-    // Create user
+    
     const user = await User.create({
       name,
       email,
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       websiteUrl
     });
 
-    // Generate token
+    
     const token = generateToken(user._id.toString());
 
     return createSuccessResponse({

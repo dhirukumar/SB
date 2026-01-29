@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search');
     const sort = searchParams.get('sort');
 
-    // Build query
+    
     let query: any = { isActive: true };
 
     if (category && category !== 'all') {
@@ -28,10 +28,10 @@ export async function GET(request: NextRequest) {
       query.$text = { $search: search };
     }
 
-    // Execute query
+  
     let dealsQuery = Deal.find(query);
 
-    // Sort
+    
     if (sort === 'newest') {
       dealsQuery = dealsQuery.sort({ createdAt: -1 });
     } else if (sort === 'oldest') {

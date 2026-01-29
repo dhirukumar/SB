@@ -10,26 +10,26 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, password } = body;
 
-    // Validation
+   
     if (!email || !password) {
       return createErrorResponse('Please provide email and password', 400);
     }
 
-    // Find user with password
+    
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
       return createErrorResponse('Invalid credentials', 401);
     }
 
-    // Check password
+  
     const isPasswordMatch = await user.comparePassword(password);
 
     if (!isPasswordMatch) {
       return createErrorResponse('Invalid credentials', 401);
     }
 
-    // Generate token
+    
     const token = generateToken(user._id.toString());
 
     return createSuccessResponse({

@@ -7,7 +7,7 @@ const api = axios.create({
   },
 });
 
-// Add token to requests
+
 api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
